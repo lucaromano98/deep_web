@@ -1,0 +1,19 @@
+{
+    "armibuonepotenti": [
+        {
+            "name": "Monocolpo",
+            "quantit\u00e0": 4,
+            "costo": "50 Willie Coin"
+        },
+        {
+            "name": "Pistola Semi-Automatica",
+            "quantit\u00e0": 0,
+            "costo": "100 Willie Coin"
+        },
+        {
+            "name": "Coltello",
+            "quantit\u00e0": 0,
+            "costo": "10 Willie Coin"
+        }
+    ]
+}
