@@ -10,6 +10,6 @@ root.geometry(f"{screen_width}x{screen_height}")
 root.resizable(True, True)
 
 # Mostra la homepage
-create_homepage(root, check_url, show_store)
+create_homepage(root, check_url)
 
 root.mainloop()

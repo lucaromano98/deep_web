@@ -2,35 +2,52 @@
     "armibuonepotenti": [
         {
             "name": "Monocolpo",
-            "quantità": 5,
+            "quantit\u00e0": 3,
             "costo": "50 Willie Coin"
         },
         {
             "name": "Pistola Semi-Automatica",
-            "quantità": 5,
+            "quantit\u00e0": 3,
             "costo": "100 Willie Coin"
         },
         {
             "name": "Coltello",
-            "quantità": 5,
+            "quantit\u00e0": 4,
             "costo": "10 Willie Coin"
         }
     ],
     "sietesolooggetti": [
         {
-            "name": "Donna età compresa tra i 40 e 45",
-            "quantità": "Esaurito",
+            "name": "Donna et\u00e0 compresa tra i 40 e 45",
+            "quantit\u00e0": "Esaurito",
             "costo": "30.000$"
         },
         {
-            "name": "Uomo età compresa tra i 20 ed i 25",
-            "quantità": "Esaurito",
+            "name": "Uomo et\u00e0 compresa tra i 20 ed i 25",
+            "quantit\u00e0": "Esaurito",
             "costo": "30.000$"
         },
         {
-            "name": "Donna età compresa tra i 25 ed i 30",
-            "quantità": "in stock",
+            "name": "Donna et\u00e0 compresa tra i 25 ed i 30",
+            "quantit\u00e0": "in stock",
             "costo": "30.000$"
+        }
+    ],
+    "farmaciamici": [
+        {
+            "name": "4dri4m1c1n4",
+            "quantit\u00e0": 1,
+            "costo": "50 dollari"
+        },
+        {
+            "name": "C1spl4t1n0",
+            "quantit\u00e0": "Esaurito",
+            "costo": "100 dollari"
+        },
+        {
+            "name": "V1ncr1st1n4",
+            "quantit\u00e0": "Esaurito",
+            "costo": "120 dollari"
         }
     ]
 }

@@ -37,21 +37,36 @@ def purchase(store_name, product, product_quantity_label, buy_button, confirmati
                 confirmation_label.config(text="Prodotto non disponibile.")
             break
 
+def show_store(root, store_name, show_home):
+    store_functions = {
+        "armibuonepotenti": show_store_armibuonepotenti,
+        "sietesolooggetti": show_store_sietesolooggetti,
+        "farmaciamici": show_store_farmaciamici
+    }
+
+    show_function = store_functions.get(store_name)
+    if show_function:
+        show_function(root, store_name, show_home)
+    else:
+        messagebox.showerror("Errore", "Store non trovato.")
+
+
 # Funzione per verificare l'URL inserito e mostrare lo store
-def check_url(root, url_entry, show_store):
-    user_url = url_entry.get()  # Ottiene il valore inserito nel campo di input
+def check_url(root, url_entry):
+    user_url = url_entry.get()
     store_urls = {
         "www.armibuonepotenti.gre": "armibuonepotenti",
-        "www.sietesolooggetti.gre": "sietesolooggetti"
+        "www.sietesolooggetti.gre": "sietesolooggetti",
+        "www.farmaciamici.gre": "farmaciamici"
     }
 
     store_name = store_urls.get(user_url)
-    if store_name == "sietesolooggetti":
-        show_store_sietesolooggetti(root, store_name, lambda: create_homepage(root, check_url, show_store))
-    elif store_name:  # Per gli altri store generici
-        show_store(root, store_name, lambda: create_homepage(root, check_url, show_store))
+    if store_name:
+        # Chiama la funzione generica `show_store`
+        show_store(root, store_name, lambda: create_homepage(root, check_url))
     else:
-        messagebox.showerror("Errore", "URL non trovato.")  # Mostra un messaggio di errore
+        messagebox.showerror("Errore", "URL non trovato.")
+
 
 
 # Funzione per animare la scritta di benvenuto
@@ -64,43 +79,58 @@ def animate_label():
 animate_label.color_index = 0
 
 # Funzione per mostrare la homepage
-def create_homepage(root, check_url, show_store):
-    # Pulisce la finestra principale per mostrare la homepage
+def create_homepage(root, check_url):
+    # Configura la finestra principale per la homepage
+    root.configure(bg="#3a003f")
+
+    # Rimuove tutti i widget attualmente presenti nella finestra
     for widget in root.winfo_children():
         widget.destroy()
 
-    # Configura lo sfondo principale
-    root.configure(bg="#2d0033")
+    # Creazione del frame centrale
+    middle_frame = tk.Frame(root, bg="#3a003f")
+    middle_frame.pack(fill=tk.BOTH, expand=True)
 
-    # Sezione centrale per la barra di ricerca
-    middle_frame = tk.Frame(root, bg='#2d0033')
-    middle_frame.pack(expand=True)
-
-    # Carica l'immagine del logo della homepage
+    # Aggiungi il logo
     try:
-        logo_image = Image.open(os.path.join("assets", "corn_logo.png"))
+        logo_image = Image.open(os.path.join("assets", "corn_logo.png"))  # Modifica con il tuo file di logo
         logo_image = logo_image.resize((200, 200), Image.Resampling.LANCZOS)
         logo_photo = ImageTk.PhotoImage(logo_image)
-        logo_label = tk.Label(middle_frame, image=logo_photo, bg='#2d0033')
-        logo_label.image = logo_photo
-        logo_label.pack(pady=20)
+        logo_label = tk.Label(middle_frame, image=logo_photo, bg="#3a003f")
+        logo_label.image = logo_photo  # Conserva il riferimento
+        logo_label.pack(pady=10)
     except Exception as e:
         print(f"Errore nel caricamento del logo: {e}")
 
     # Etichetta per l'URL
-    url_label = tk.Label(middle_frame, text="Inserisci l'URL:", fg='#d1b3ff', bg='#2d0033', font=('Comic Sans MS', 16, 'bold'))
-    url_label.pack(pady=10)
+    url_label = tk.Label(
+        middle_frame,
+        text="Inserisci URL:",
+        font=('Comic Sans MS', 14),
+        bg="#3a003f",
+        fg="white"
+    )
+    url_label.pack(pady=5)
 
     # Campo di input per l'URL
-    url_entry = tk.Entry(middle_frame, width=50, font=('Courier', 12), bg="#4b006e", fg="white", insertbackground="white")
-    url_entry.pack(pady=10)
+    url_entry = tk.Entry(middle_frame, font=('Comic Sans MS', 12), width=50)
+    url_entry.pack(pady=5)
 
     # Pulsante "Vai"
-    go_button = tk.Button(middle_frame, text="Vai", command=lambda: check_url(root, url_entry, show_store), font=('Comic Sans MS', 12, 'bold'), bg="#800080", fg="white", bd=5)
+    go_button = tk.Button(
+        middle_frame,
+        text="Vai",
+        command=lambda: check_url(root, url_entry),
+        font=('Comic Sans MS', 12, 'bold'),
+        bg="#800080",
+        fg="white",
+        bd=5
+    )
     go_button.pack(pady=5)
 
+
 # Funzione per mostrare lo store sulla finestra principale
-def show_store(root, store_name, show_home):
+def show_store_armibuonepotenti(root, store_name, show_home):
     # Pulisce la finestra principale per mostrare lo store
     for widget in root.winfo_children():
         widget.destroy()
@@ -296,5 +326,87 @@ def show_store_sietesolooggetti(root, store_name, show_home):
         no_products_label = tk.Label(main_frame, text="Nessun prodotto disponibile", font=('Roboto', 16), bg="#0C0C0E", fg="#FF0000")
         no_products_label.pack(pady=20)
 
+def show_store_farmaciamici(root, store_name, show_home):
+    # Pulisce la finestra principale per mostrare lo store
+    for widget in root.winfo_children():
+        widget.destroy()
 
+    # Configura la finestra per lo store "Farmacia Amici"
+    root.configure(bg="#E0F7FA")  # Sfondo azzurro chiaro
+
+    # Crea un canvas con uno scrollbar per contenere il main_frame
+    canvas = tk.Canvas(root, bg="#E0F7FA", highlightthickness=0)
+    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+    scrollbar = tk.Scrollbar(root, orient="vertical", command=canvas.yview)
+    scrollbar.pack(side=tk.RIGHT, fill="y")
+
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    # Crea un frame per il contenuto centrale dello store
+    main_frame = tk.Frame(canvas, bg="#E0F7FA")
+    canvas_window = canvas.create_window((0, 0), window=main_frame, anchor='n')
+
+    # Configura il canvas per adattarsi al contenuto del frame
+    main_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+    canvas.bind("<Configure>", lambda e: canvas.itemconfig(canvas_window, width=e.width))
+
+    # Pulsante "Home" per tornare alla homepage
+    home_button = tk.Button(main_frame, text="Home", font=('Helvetica', 12, 'bold'), bg="#00897B", fg="white", command=show_home)
+    home_button.pack(pady=10, anchor='nw')
+
+    # Scritta di benvenuto
+    welcome_label = tk.Label(main_frame, text=f"Benvenuto su {store_name.upper()} :D", font=('Helvetica', 28, 'bold'), fg="#004D40", bg="#E0F7FA",)
+    welcome_label.pack(pady=20)
+
+    # Icona a tema medico
+    try:
+        icon_path = os.path.join("assets", "farmaciamici_logo.png")  # Assicurati di avere questa immagine
+        icon_image = Image.open(icon_path)
+        icon_image = icon_image.resize((400, 400), Image.Resampling.LANCZOS)
+        icon_photo = ImageTk.PhotoImage(icon_image)
+        icon_label = tk.Label(main_frame, image=icon_photo, bg="#E0F7FA")
+        icon_label.image = icon_photo
+        icon_label.pack(pady=20)
+    except Exception as e:
+        print(f"Errore nel caricamento dell'icona: {e}")
+
+    # Carica i prodotti dello store "Farmacia Amici"
+    store_data = load_store_data()
+    products = store_data.get(store_name, [])
+
+    # Mostra i prodotti
+    if products:
+        card_frame = tk.Frame(main_frame, bg="#E0F7FA")  # Frame per contenere tutte le card
+        card_frame.pack(pady=20)
+
+        for product in products:
+            product_frame = tk.Frame(card_frame, bg="#FFFFFF", bd=2, relief="solid")
+            product_frame.pack(side=tk.LEFT, padx=15, pady=15)
+
+            # Nome del prodotto
+            product_name = tk.Label(product_frame, text=product["name"], font=('Helvetica', 14, 'bold'), bg="#FFFFFF", fg="#004D40")
+            product_name.pack(pady=(10, 5))
+
+            # Quantità del prodotto
+            product_quantity_label = tk.Label(product_frame, font=('Helvetica', 12), bg="#FFFFFF", fg="#004D40")
+            if product["quantità"] == "Esaurito":
+                product_quantity_label.config(text="Esaurito", fg="#FF0000")
+            else:
+                product_quantity_label.config(text=f"Quantità: {product['quantità']}")
+            product_quantity_label.pack()
+
+            # Costo del prodotto
+            product_price = tk.Label(product_frame, text=f"Costo: {product['costo']}", font=('Helvetica', 12), bg="#FFFFFF", fg="#004D40")
+            product_price.pack(pady=(5, 10))
+
+            # Pulsante di acquisto
+            buy_button = tk.Button(product_frame, text="Acquista", font=('Helvetica', 12, 'bold'), bg="#00897B", fg="white")
+            if product["quantità"] == "Esaurito":
+                buy_button.config(state=tk.DISABLED)
+            buy_button.pack(pady=5)
+
+    else:
+        no_products_label = tk.Label(main_frame, text="Nessun prodotto disponibile", font=('Helvetica', 16), bg="#E0F7FA", fg="#FF0000")
+        no_products_label.pack(pady=20)
 
