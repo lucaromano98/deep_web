@@ -2,18 +2,35 @@
     "armibuonepotenti": [
         {
             "name": "Monocolpo",
-            "quantit\u00e0": 4,
+            "quantità": 5,
             "costo": "50 Willie Coin"
         },
         {
             "name": "Pistola Semi-Automatica",
-            "quantit\u00e0": 0,
+            "quantità": 5,
             "costo": "100 Willie Coin"
         },
         {
             "name": "Coltello",
-            "quantit\u00e0": 0,
+            "quantità": 5,
             "costo": "10 Willie Coin"
+        }
+    ],
+    "sietesolooggetti": [
+        {
+            "name": "Donna età compresa tra i 40 e 45",
+            "quantità": "Esaurito",
+            "costo": "30.000$"
+        },
+        {
+            "name": "Uomo età compresa tra i 20 ed i 25",
+            "quantità": "Esaurito",
+            "costo": "30.000$"
+        },
+        {
+            "name": "Donna età compresa tra i 25 ed i 30",
+            "quantità": "in stock",
+            "costo": "30.000$"
         }
     ]
 }
