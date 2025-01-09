@@ -2,7 +2,7 @@
     "armibuonepotenti": [
         {
             "name": "Monocolpo",
-            "quantit\u00e0": 3,
+            "quantit\u00e0": 1,
             "costo": "50 Willie Coin"
         },
         {
@@ -12,7 +12,7 @@
         },
         {
             "name": "Coltello",
-            "quantit\u00e0": 4,
+            "quantit\u00e0": 2,
             "costo": "10 Willie Coin"
         }
     ],
@@ -29,7 +29,7 @@
         },
         {
             "name": "Donna et\u00e0 compresa tra i 25 ed i 30",
-            "quantit\u00e0": "in stock",
+            "quantit\u00e0": "recupero in corso",
             "costo": "30.000$"
         }
     ],
@@ -48,6 +48,12 @@
             "name": "V1ncr1st1n4",
             "quantit\u00e0": "Esaurito",
             "costo": "120 dollari"
+        },
+
+        {
+            "name": "farmaco",
+            "quantità": 1,
+            "costo":"10 Willie Coin"
         }
     ]
 }

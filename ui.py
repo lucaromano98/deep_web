@@ -67,6 +67,50 @@ def check_url(root, url_entry):
     else:
         messagebox.showerror("Errore", "URL non trovato.")
 
+def handle_purchase(store_name, product, quantity_label, buy_button, confirmation_label, confimation_color):
+    """
+    Gestisce l'acquisto di un prodotto:
+    - Diminuisce la quantità.
+    - Disabilita il pulsante "Acquista" se la quantità scende a 0.
+    - Mostra un messaggio di conferma globale sotto tutte le card.
+    """
+    # Carica i dati dello store
+    store_data = load_store_data()
+    products = store_data.get(store_name, [])
+
+    # Cerca il prodotto specifico
+    for p in products:
+        if p["name"] == product["name"]:
+            # Controlla la disponibilità
+            if isinstance(p["quantità"], int) and p["quantità"] > 0:
+                # Riduci la quantità
+                p["quantità"] -= 1
+
+                # Aggiorna la quantità nel widget
+                if p["quantità"] == 0:
+                    p["quantità"] = "Esaurito"
+                    quantity_label.config(text="Esaurito", fg="#FF0000")
+                    buy_button.config(state=tk.DISABLED)  # Disabilita il pulsante
+                else:
+                    quantity_label.config(text=f"Quantità: {p['quantità']}")
+
+                # Mostra il messaggio globale di conferma
+                confirmation_label.config(
+                    text=f"Acquisto di {p['name']} effettuato con successo! (CHIAMA UN NARRATORE!)",
+                    fg= confimation_color  #colore custom
+                )
+
+                # Salva i prodotti aggiornati
+                store_data[store_name] = products
+                save_store_data(store_data)
+            else:
+                # Mostra un messaggio di errore globale
+                confirmation_label.config(
+                    text=f"Prodotto {p['name']} non disponibile.",
+                    fg="#FF0000"  # Testo rosso
+                )
+            break
+
 
 
 # Funzione per animare la scritta di benvenuto
@@ -87,38 +131,42 @@ def create_homepage(root, check_url):
     for widget in root.winfo_children():
         widget.destroy()
 
-    # Creazione del frame centrale
+    # Creazione del frame centrale (centrale alla pagina)
     middle_frame = tk.Frame(root, bg="#3a003f")
     middle_frame.pack(fill=tk.BOTH, expand=True)
+
+    # Centrare tutto utilizzando un contenitore interno
+    content_frame = tk.Frame(middle_frame, bg="#3a003f")
+    content_frame.pack(expand=True)  # Centra il contenuto nella finestra
 
     # Aggiungi il logo
     try:
         logo_image = Image.open(os.path.join("assets", "corn_logo.png"))  # Modifica con il tuo file di logo
         logo_image = logo_image.resize((200, 200), Image.Resampling.LANCZOS)
         logo_photo = ImageTk.PhotoImage(logo_image)
-        logo_label = tk.Label(middle_frame, image=logo_photo, bg="#3a003f")
+        logo_label = tk.Label(content_frame, image=logo_photo, bg="#3a003f")
         logo_label.image = logo_photo  # Conserva il riferimento
-        logo_label.pack(pady=10)
+        logo_label.pack(pady=20)  # Spaziatura verticale
     except Exception as e:
         print(f"Errore nel caricamento del logo: {e}")
 
     # Etichetta per l'URL
     url_label = tk.Label(
-        middle_frame,
+        content_frame,
         text="Inserisci URL:",
         font=('Comic Sans MS', 14),
         bg="#3a003f",
         fg="white"
     )
-    url_label.pack(pady=5)
+    url_label.pack(pady=10)
 
     # Campo di input per l'URL
-    url_entry = tk.Entry(middle_frame, font=('Comic Sans MS', 12), width=50)
-    url_entry.pack(pady=5)
+    url_entry = tk.Entry(content_frame, font=('Comic Sans MS', 12), width=50)
+    url_entry.pack(pady=10)
 
     # Pulsante "Vai"
     go_button = tk.Button(
-        middle_frame,
+        content_frame,
         text="Vai",
         command=lambda: check_url(root, url_entry),
         font=('Comic Sans MS', 12, 'bold'),
@@ -126,10 +174,11 @@ def create_homepage(root, check_url):
         fg="white",
         bd=5
     )
-    go_button.pack(pady=5)
+    go_button.pack(pady=10)
 
 
-# Funzione per mostrare lo store sulla finestra principale
+
+# Funzione per mostrare lo store di armi
 def show_store_armibuonepotenti(root, store_name, show_home):
     # Pulisce la finestra principale per mostrare lo store
     for widget in root.winfo_children():
@@ -202,16 +251,15 @@ def show_store_armibuonepotenti(root, store_name, show_home):
             product_name = tk.Label(product_frame, text=product["name"], font=('Comic Sans MS', 14, 'bold'), bg="#4b006e", fg="#d1b3ff")
             product_name.pack(pady=(10, 5))
 
-          # Quantità del prodotto e gestione stato
+            # Quantità del prodotto e gestione stato
             product_quantity_label = tk.Label(product_frame, font=('Comic Sans MS', 12), bg="#4b006e", fg="#d1b3ff")
             if product["quantità"] == "Esaurito":
                 product_quantity_label.config(text="Esaurito")
-                buy_button.config(state=tk.DISABLED)
             elif product["quantità"] > 0:
                 product_quantity_label.config(text=f"Quantità: {product['quantità']}")
             else:
                 product_quantity_label.config(text="Prodotto non disponibile")
-
+            product_quantity_label.pack()
 
             # Costo del prodotto
             product_price = tk.Label(product_frame, text=f"Costo: {product['costo']}", font=('Comic Sans MS', 12), bg="#4b006e", fg="#d1b3ff")
@@ -221,30 +269,27 @@ def show_store_armibuonepotenti(root, store_name, show_home):
             buy_button = tk.Button(
                 product_frame,
                 text="Acquista",
-                font=('Comic Sans MS', 12, 'bold'),
-                bg="#800080",
-                fg="white"
+                font=('Impact', 12, 'bold'),
+                bg="#800080",  # Colore viola per il pulsante
+                fg="#FFFFFF"   # Testo bianco
             )
-            buy_button.config(command=partial(purchase, store_name, product, product_quantity_label, buy_button, confirmation_label))
+            buy_button.config(
+                command=partial(handle_purchase, store_name, product, product_quantity_label, buy_button, confirmation_label, "#FF4500")
+            )
+            buy_button.pack(pady=5)  # Posiziona il pulsante
 
-            # Se il prodotto non è disponibile, disabilita il pulsante di acquisto
-            if product["quantità"] == 0:
-                buy_button.config(state=tk.DISABLED)
 
-            buy_button.pack(pady=5)
-    else:
-        no_products_label = tk.Label(main_frame, text="Nessun prodotto disponibile", font=('Comic Sans MS', 16), bg="#3a003f", fg="#d1b3ff")
-        no_products_label.pack(pady=20)
-        
 
-# Funzione per mostrare lo store "Siete Solo Oggetti"
+           
+
+# Funzione per mostrare lo store di traffico umano
 def show_store_sietesolooggetti(root, store_name, show_home):
     # Pulisce la finestra principale per mostrare lo store
     for widget in root.winfo_children():
         widget.destroy()
 
     # Configura la finestra per lo store "Siete Solo Oggetti"
-    root.configure(bg="#0C0C0E")  # Sfondo dello stesso colore dell'immagine
+    root.configure(bg="#0C0C0E")  # Sfondo nero
 
     # Crea un canvas con uno scrollbar per contenere il main_frame
     canvas = tk.Canvas(root, bg="#0C0C0E", highlightthickness=0)
@@ -275,7 +320,7 @@ def show_store_sietesolooggetti(root, store_name, show_home):
 
     # Carica il logo personalizzato
     try:
-        logo_image = Image.open(os.path.join("assets", "sietesolooggetti_logo.png"))
+        logo_image = Image.open(os.path.join("assets", "sietesolooggetti_logo.png"))  # Assicurati di avere questa immagine
         logo_image = logo_image.resize((400, 400), Image.Resampling.LANCZOS)
         logo_photo = ImageTk.PhotoImage(logo_image)
         logo_label = tk.Label(main_frame, image=logo_photo, bg="#0C0C0E")
@@ -293,19 +338,29 @@ def show_store_sietesolooggetti(root, store_name, show_home):
         card_frame = tk.Frame(main_frame, bg="#0C0C0E")  # Frame per contenere tutte le card
         card_frame.pack(pady=20)
 
-        confirmation_label = tk.Label(main_frame, text="", font=('Roboto', 14), bg="#0C0C0E", fg="#00FF00")
-        confirmation_label.pack(pady=20)
 
         for product in products:
-            product_frame = tk.Frame(card_frame, bg="#1E1E1E", bd=5, relief="ridge")
+    # Frame della card per ciascun prodotto
+            product_frame = tk.Frame(card_frame, bg="#222222", bd=5, relief="ridge")
             product_frame.pack(side=tk.LEFT, padx=20, pady=20)
 
             # Nome del prodotto
-            product_name = tk.Label(product_frame, text=product["name"], font=('Roboto', 14, 'bold'), bg="#1E1E1E", fg="#FFFFFF")
+            product_name = tk.Label(
+                product_frame,
+                text=product["name"],
+                font=('Roboto', 14, 'bold'),
+                bg="#222222",
+                fg="#FFFFFF"
+            )
             product_name.pack(pady=(10, 5))
 
             # Quantità del prodotto
-            product_quantity_label = tk.Label(product_frame, font=('Roboto', 12), bg="#1E1E1E", fg="#FFFFFF")
+            product_quantity_label = tk.Label(
+                product_frame,
+                font=('Roboto', 12),
+                bg="#222222",
+                fg="#FFFFFF"
+            )
             if product["quantità"] == "Esaurito":
                 product_quantity_label.config(text="Esaurito", fg="#FF0000")
             else:
@@ -313,19 +368,46 @@ def show_store_sietesolooggetti(root, store_name, show_home):
             product_quantity_label.pack()
 
             # Costo del prodotto
-            product_price = tk.Label(product_frame, text=f"Costo: {product['costo']}", font=('Roboto', 12), bg="#1E1E1E", fg="#FFFFFF")
+            product_price = tk.Label(
+                product_frame,
+                text=f"Costo: {product['costo']}",
+                font=('Roboto', 12),
+                bg="#222222",
+                fg="#FFFFFF"
+            )
             product_price.pack(pady=(5, 10))
 
+            confirmation_label = tk.Label(
+                main_frame,
+                text="",
+                font=('Roboto', 16, 'bold'),
+                bg="#0C0C0E",  # Sfondo nero scuro
+                fg="#00FF00",  # Testo verde brillante
+                pady=10
+            )
+            confirmation_label.pack(pady=20)
+
             # Pulsante di acquisto
-            buy_button = tk.Button(product_frame, text="Acquista", font=('Roboto', 12, 'bold'), bg="#FF0000", fg="white")
-            if product["quantità"] == "Esaurito":
-                buy_button.config(state=tk.DISABLED)
-            buy_button.pack(pady=5)
+            buy_button = tk.Button(
+                product_frame,
+                text="Prenota",
+                font=('Roboto', 12, 'bold'),
+                bg="#FF0000",  # Colore rosso per il pulsante
+                fg="#FFFFFF"   # Testo bianco
+            )
+            if product["quantità"] == "Esaurito" or product["quantità"] == 0:
+                buy_button.config(state=tk.DISABLED)  # Disabilita il pulsante se il prodotto è esaurito
+            else:
+                buy_button.config(
+                    command=partial(handle_purchase, store_name, product, product_quantity_label, buy_button, confirmation_label, "00FF00")
+                )
+            buy_button.pack(pady=5)  # Posiziona il pulsante
 
-    else:
-        no_products_label = tk.Label(main_frame, text="Nessun prodotto disponibile", font=('Roboto', 16), bg="#0C0C0E", fg="#FF0000")
-        no_products_label.pack(pady=20)
 
+
+
+
+#Store Farmaci quest El Chapo
 def show_store_farmaciamici(root, store_name, show_home):
     # Pulisce la finestra principale per mostrare lo store
     for widget in root.winfo_children():
@@ -381,15 +463,27 @@ def show_store_farmaciamici(root, store_name, show_home):
         card_frame.pack(pady=20)
 
         for product in products:
+            # Frame della card per ciascun prodotto
             product_frame = tk.Frame(card_frame, bg="#FFFFFF", bd=2, relief="solid")
             product_frame.pack(side=tk.LEFT, padx=15, pady=15)
 
             # Nome del prodotto
-            product_name = tk.Label(product_frame, text=product["name"], font=('Helvetica', 14, 'bold'), bg="#FFFFFF", fg="#004D40")
+            product_name = tk.Label(
+                product_frame,
+                text=product["name"],
+                font=('Helvetica', 14, 'bold'),
+                bg="#FFFFFF",
+                fg="#004D40"
+            )
             product_name.pack(pady=(10, 5))
 
             # Quantità del prodotto
-            product_quantity_label = tk.Label(product_frame, font=('Helvetica', 12), bg="#FFFFFF", fg="#004D40")
+            product_quantity_label = tk.Label(
+                product_frame,
+                font=('Helvetica', 12),
+                bg="#FFFFFF",
+                fg="#004D40"
+            )
             if product["quantità"] == "Esaurito":
                 product_quantity_label.config(text="Esaurito", fg="#FF0000")
             else:
@@ -397,16 +491,42 @@ def show_store_farmaciamici(root, store_name, show_home):
             product_quantity_label.pack()
 
             # Costo del prodotto
-            product_price = tk.Label(product_frame, text=f"Costo: {product['costo']}", font=('Helvetica', 12), bg="#FFFFFF", fg="#004D40")
+            product_price = tk.Label(
+                product_frame,
+                text=f"Costo: {product['costo']}",
+                font=('Helvetica', 12),
+                bg="#FFFFFF",
+                fg="#004D40"
+            )
             product_price.pack(pady=(5, 10))
 
-            # Pulsante di acquisto
-            buy_button = tk.Button(product_frame, text="Acquista", font=('Helvetica', 12, 'bold'), bg="#00897B", fg="white")
-            if product["quantità"] == "Esaurito":
-                buy_button.config(state=tk.DISABLED)
-            buy_button.pack(pady=5)
+            # Messaggio di conferma
+            
+            confirmation_label = tk.Label(
+                main_frame,
+                text="",
+                font=('Roboto', 16, 'bold'),
+                bg="#FFFFFF",  # Sfondo chiaro per visibilità
+                fg="#004D40",  # Testo verde scuro
+                pady=10
+                )
+            confirmation_label.pack(pady=20)
 
-    else:
-        no_products_label = tk.Label(main_frame, text="Nessun prodotto disponibile", font=('Helvetica', 16), bg="#E0F7FA", fg="#FF0000")
-        no_products_label.pack(pady=20)
+            # Pulsante di acquisto
+            buy_button = tk.Button(
+                product_frame,
+                text="Acquista",
+                font=('Helvetica', 12, 'bold'),
+                bg="#00897B",  # Colore verde acqua come il pulsante "Home"
+                fg="white"     # Testo bianco
+            )
+            if product["quantità"] == "Esaurito" or product["quantità"] == 0:
+                buy_button.config(state=tk.DISABLED)  # Disabilita il pulsante se il prodotto è esaurito
+            else:
+                buy_button.config(
+                    command=partial(handle_purchase, store_name, product, product_quantity_label, buy_button, confirmation_label, "#00BFFF")
+                )
+            buy_button.pack(pady=5)  # Posiziona il pulsante
+
+
 
