@@ -52,7 +52,8 @@ def show_store(root, store_name, show_home):
         "sietesolooggetti": show_store_sietesolooggetti,
         "farmaciamici": show_store_farmaciamici,
         "farciturespeciali": show_store_farciturespeciali,
-        "droghe4ever": show_store_droghe4ever
+        "droghe4ever": show_store_droghe4ever,
+        "coseperilcorpo": show_store_coseperilcorpo
     }
 
     show_function = store_functions.get(store_name)
@@ -70,7 +71,8 @@ def check_url(root, url_entry):
         "www.sietesolooggetti.gre": "sietesolooggetti",
         "www.farmaciamici.gre": "farmaciamici",
         "www.farciturespeciali.gre": "farciturespeciali",
-        "www.droghe4ever.gre": "droghe4ever"
+        "www.droghe4ever.gre": "droghe4ever",
+        "www.coseperilcorpo.gre": "coseperilcorpo"
     }
 
     store_name = store_urls.get(user_url)
@@ -833,3 +835,122 @@ def show_store_droghe4ever(root, store_name, show_home):
             buy_button.pack(pady=5)  # Posiziona il pulsante
 
 
+def show_store_coseperilcorpo(root, store_name, show_home):
+    # Pulisce la finestra principale per mostrare lo store
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Configura la finestra per lo store "CosePerIlCorpo"
+    root.configure(bg="#0C0C0E")  # Sfondo nero
+
+    # Crea un canvas con uno scrollbar per contenere il main_frame
+    canvas = tk.Canvas(root, bg="#0C0C0E", highlightthickness=0)
+    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+    scrollbar = tk.Scrollbar(root, orient="vertical", command=canvas.yview)
+    scrollbar.pack(side=tk.RIGHT, fill="y")
+
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    # Crea un frame per il contenuto centrale dello store
+    main_frame = tk.Frame(canvas, bg="#0C0C0E")
+    canvas_window = canvas.create_window((0, 0), window=main_frame, anchor='n')
+
+    # Configura il canvas per adattarsi al contenuto del frame
+    main_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+    # Configura il canvas per adattarsi alla larghezza della finestra
+    canvas.bind("<Configure>", lambda e: canvas.itemconfig(canvas_window, width=e.width))
+
+    # Pulsante "Home" per tornare alla homepage
+    home_button = tk.Button(main_frame, text="Home", font=('Impact', 12, 'bold'), bg="#FF0000", fg="white", cursor="hand2", command=show_home)
+    home_button.pack(pady=10, anchor='nw')
+
+    # Carica il logo personalizzato
+    try:
+        logo_image = create_circular_image_with_border("assets/coseperilcorpo_logo.png", border_width=15, border_color="#FF0000", final_size=(200, 200))
+        logo_photo = ImageTk.PhotoImage(logo_image)
+        logo_label = tk.Label(main_frame, image=logo_photo, bg="#0C0C0E")
+        logo_label.image = logo_photo
+        logo_label.pack(pady=20)
+    except Exception as e:
+        print(f"Errore nel caricamento del logo: {e}")
+
+    # Scritta di benvenuto con font "Impact" e colore rosso sangue
+    welcome_label = tk.Label(main_frame, text=f"BENVENUTO SU {store_name.upper()}", font=('Impact', 28, 'bold'), fg="#FF0000", bg="#0C0C0E")
+    welcome_label.pack(pady=20)
+
+    # Carica i prodotti dallo store "CosePerIlCorpo"
+    store_data = load_store_data()
+    products = store_data.get(store_name, [])
+
+    # Mostra i prodotti come card
+    if products:
+        card_frame = tk.Frame(main_frame, bg="#0C0C0E")  # Frame per contenere tutte le card
+        card_frame.pack(pady=20)
+
+        # Etichetta per il messaggio di conferma dell'acquisto
+        confirmation_label = tk.Label(
+            main_frame,
+            text="",
+            font=('Roboto', 16, 'bold'),
+            bg="#0C0C0E",  # Sfondo nero
+            fg="#FF4500",  # Testo rosso acceso
+            pady=10
+        )
+        confirmation_label.pack(pady=20)
+
+        for product in products:
+            # Frame della card per ciascun prodotto
+            product_frame = tk.Frame(card_frame, bg="#1A1A1A", bd=5, relief="ridge")
+            product_frame.pack(side=tk.LEFT, padx=20, pady=20)
+
+            # Nome del prodotto
+            product_name = tk.Label(
+                product_frame,
+                text=product["name"],
+                font=('Roboto', 14, 'bold'),
+                bg="#1A1A1A",
+                fg="#FFFFFF"
+            )
+            product_name.pack(pady=(10, 5))
+
+            # Quantità del prodotto
+            product_quantity_label = tk.Label(
+                product_frame,
+                font=('Roboto', 12),
+                bg="#1A1A1A",
+                fg="#FFFFFF"
+            )
+            if product["quantità"] == "Esaurito":
+                product_quantity_label.config(text="Esaurito", fg="#FF0000")
+            else:
+                product_quantity_label.config(text=f"Quantità: {product['quantità']}")
+            product_quantity_label.pack()
+
+            # Costo del prodotto
+            product_price = tk.Label(
+                product_frame,
+                text=f"Costo: {product['costo']}",
+                font=('Roboto', 12),
+                bg="#1A1A1A",
+                fg="#FFFFFF"
+            )
+            product_price.pack(pady=(5, 10))
+
+            # Pulsante di acquisto
+            buy_button = tk.Button(
+                product_frame,
+                text="Acquista",
+                font=('Roboto', 12, 'bold'),
+                bg="#FF0000",  # Rosso sangue
+                fg="#FFFFFF",  # Testo bianco
+                cursor="hand2"
+            )
+            if product["quantità"] == "Esaurito" or product["quantità"] == 0:
+                buy_button.config(state=tk.DISABLED)  # Disabilita il pulsante se il prodotto è esaurito
+            else:
+                buy_button.config(
+                    command=partial(handle_purchase, store_name, product, product_quantity_label, buy_button, confirmation_label, "#FF4500")
+                )
+            buy_button.pack(pady=5)  # Posiziona il pulsante

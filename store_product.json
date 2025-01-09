@@ -88,5 +88,17 @@
             "quantit\u00e0": 1,
             "costo": "6$ a dose"
         }
+    ],
+    "coseperilcorpo": [
+        {
+            "name" : "Rene",
+            "quantit\u00e0": "Disponibile su Richiesta",
+            "costo": "Prezzo di partenza: \n 20.000$"
+        },
+        {
+            "name" : "Cuore",
+            "quantit\u00e0": "Disponibile su Richiesta",
+            "costo": "Prezzo di partenza: \n 50.000$"
+        }
     ]
 }
