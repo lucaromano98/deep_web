@@ -3,57 +3,90 @@
         {
             "name": "Monocolpo",
             "quantit\u00e0": 1,
-            "costo": "50 Willie Coin"
+            "costo": "17 Willie Coin o 500$"
         },
         {
             "name": "Pistola Semi-Automatica",
             "quantit\u00e0": 3,
-            "costo": "100 Willie Coin"
+            "costo": "50 Willie Coin o 1.500$"
         },
         {
             "name": "Coltello",
             "quantit\u00e0": 2,
-            "costo": "10 Willie Coin"
+            "costo": "3 Willie Coin o 90$"
         }
     ],
     "sietesolooggetti": [
         {
             "name": "Donna et\u00e0 compresa tra i 40 e 45",
             "quantit\u00e0": "Esaurito",
-            "costo": "30.000$"
+            "costo": "1.000 WillieCoin oppure 30.000$"
         },
         {
             "name": "Uomo et\u00e0 compresa tra i 20 ed i 25",
             "quantit\u00e0": "Esaurito",
-            "costo": "30.000$"
+            "costo": "1.000 WillieCoin oppure 30.000$"
         },
         {
             "name": "Donna et\u00e0 compresa tra i 25 ed i 30",
             "quantit\u00e0": "recupero in corso",
-            "costo": "30.000$"
+            "costo": "1.000 WillieCoin oppure 30.000$"
         }
     ],
     "farmaciamici": [
         {
             "name": "4dri4m1c1n4",
             "quantit\u00e0": 1,
-            "costo": "50 dollari"
+            "costo": "2 WillieCoin oppure 60$"
         },
         {
             "name": "C1spl4t1n0",
             "quantit\u00e0": "Esaurito",
-            "costo": "100 dollari"
+            "costo": "3 WillieCoin oppure 100$"
         },
         {
             "name": "V1ncr1st1n4",
             "quantit\u00e0": "Esaurito",
-            "costo": "120 dollari"
-        },
-
+            "costo": " 4 WillieCoin oppure 120$"
+        }
+    ],
+    "farciturespeciali": [
         {
-            "name": "farmaco",
-            "quantità": 1,
-            "costo":"10 Willie Coin"
+            "name": "Cromati (15 unit\u00e0)",
+            "quantit\u00e0": 2,
+            "costo": "7 WillieCoin o 210$"
+        },
+        {
+            "name": "Reagenti (30 unit\u00e0)",
+            "quantit\u00e0": 2,
+            "costo": "1 WillieCoin o 30$"
+        },
+        {
+            "name": "Catalizzatori (30 unit\u00e0)",
+            "quantit\u00e0": 1,
+            "costo": "9 WillieCoin o 280$"
+        }
+    ],
+    "droghe4ever": [
+        {
+            "name": "Gnomorfina",
+            "quantit\u00e0": 5,
+            "costo": "6$ a dose"
+        },
+        {
+            "name": "Crocaina",
+            "quantit\u00e0": 10,
+            "costo": "6$ a dose"
+        },
+        {
+            "name": "Grunghetto",
+            "quantit\u00e0": "Esaurito",
+            "costo": "6$ a dose"
+        },
+        {
+            "name": "Chata",
+            "quantit\u00e0": 1,
+            "costo": "6$ a dose"
         }
     ]
 }
