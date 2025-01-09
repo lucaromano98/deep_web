@@ -1,4 +1,6 @@
 import tkinter as tk
+import sys
+import os
 from ui import create_homepage, show_store, check_url  # Importa check_url da ui.py
 from store_manager import load_store_data, save_store_data
 

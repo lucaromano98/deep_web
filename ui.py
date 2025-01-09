@@ -3,7 +3,25 @@ from tkinter import messagebox
 from PIL import Image, ImageTk, ImageOps, ImageDraw
 from store_manager import load_store_data, save_store_data
 from functools import partial
+import sys
 import os
+
+import sys
+import os
+
+def resource_path(relative_path):
+    """
+    Ottiene il percorso di un file, sia in esecuzione normale che come eseguibile.
+    :param relative_path: Percorso relativo del file (es. "assets/logo.png").
+    :return: Percorso assoluto del file.
+    """
+    try:
+        # Percorso quando si esegue come eseguibile
+        base_path = sys._MEIPASS
+    except AttributeError:
+        # Percorso durante lo sviluppo
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 
 
@@ -156,7 +174,7 @@ def create_homepage(root, check_url):
 
     # Aggiungi il logo
     try:
-        logo_image = Image.open(os.path.join("assets", "corn_logo.png"))  # Modifica con il tuo file di logo
+        logo_image = Image.open(resource_path("assets/corn_logo.png"))  # Modifica con il tuo file di logo
         logo_image = logo_image.resize((200, 200), Image.Resampling.LANCZOS)
         logo_photo = ImageTk.PhotoImage(logo_image)
         logo_label = tk.Label(content_frame, image=logo_photo, bg="#3a003f")
@@ -244,7 +262,7 @@ def show_store_armibuonepotenti(root, store_name, show_home):
 
     # Carica l'immagine della bandiera americana
     try:
-        flag_image = Image.open(os.path.join("assets", "bandiera_armifighe.png"))
+        flag_image = Image.open(resource_path("assets/bandiera_armifighe.png"))
         flag_image = flag_image.resize((300, 150), Image.Resampling.LANCZOS)
         flag_photo = ImageTk.PhotoImage(flag_image)
         flag_label = tk.Label(main_frame, image=flag_photo, bg="#3a003f")
@@ -349,7 +367,7 @@ def show_store_sietesolooggetti(root, store_name, show_home):
 
     # Carica il logo personalizzato
     try:
-        logo_image = Image.open(os.path.join("assets", "sietesolooggetti_logo.png"))  # Assicurati di avere questa immagine
+        logo_image = Image.open(resource_path("assets/sietesolooggetti_logo.png"))  # Assicurati di avere questa immagine
         logo_image = logo_image.resize((400, 400), Image.Resampling.LANCZOS)
         logo_photo = ImageTk.PhotoImage(logo_image)
         logo_label = tk.Label(main_frame, image=logo_photo, bg="#0C0C0E")
@@ -612,7 +630,7 @@ def show_store_farciturespeciali(root, store_name, show_home):
 
     # Carica il logo personalizzato
     try:
-        logo_image = Image.open(os.path.join("assets", "farciture_speciali_logo.png"))  # Assicurati di avere questa immagine
+        logo_image = Image.open(resource_path("assets/farciture_speciali_logo.png"))  # Assicurati di avere questa immagine
         logo_image = logo_image.resize((400, 400), Image.Resampling.LANCZOS)
         logo_photo = ImageTk.PhotoImage(logo_image)
         logo_label = tk.Label(main_frame, image=logo_photo, bg="#FFF7E0")
@@ -742,7 +760,11 @@ def show_store_droghe4ever(root, store_name, show_home):
     # Carica il logo personalizzato
     try:
         # Crea un'immagine circolare con bordo
-        circular_logo = create_circular_image_with_border("assets/droghe4ever_logo.png", border_width=15, border_color="#39FF14")
+        circular_logo = create_circular_image_with_border(
+            resource_path("assets/droghe4ever_logo.png"),  
+            border_width=15,
+            border_color="#39FF14"
+        )
         
         # Converti l'immagine per Tkinter
         logo_photo = ImageTk.PhotoImage(circular_logo)
@@ -753,6 +775,7 @@ def show_store_droghe4ever(root, store_name, show_home):
         logo_label.pack(pady=20)
     except Exception as e:
         print(f"Errore nel caricamento del logo: {e}")
+
 
 
     # Scritta di benvenuto con font luminoso e colore verde neon
@@ -868,13 +891,19 @@ def show_store_coseperilcorpo(root, store_name, show_home):
 
     # Carica il logo personalizzato
     try:
-        logo_image = create_circular_image_with_border("assets/coseperilcorpo_logo.png", border_width=15, border_color="#FF0000", final_size=(200, 200))
+        logo_image = create_circular_image_with_border(
+            resource_path("assets/coseperilcorpo_logo.png"),  # Usa il percorso corretto con resource_path
+            border_width=15,
+            border_color="#FF0000",
+            final_size=(200, 200)
+        )
         logo_photo = ImageTk.PhotoImage(logo_image)
         logo_label = tk.Label(main_frame, image=logo_photo, bg="#0C0C0E")
-        logo_label.image = logo_photo
+        logo_label.image = logo_photo  # Conserva il riferimento
         logo_label.pack(pady=20)
     except Exception as e:
         print(f"Errore nel caricamento del logo: {e}")
+
 
     # Scritta di benvenuto con font "Impact" e colore rosso sangue
     welcome_label = tk.Label(main_frame, text=f"BENVENUTO SU {store_name.upper()}", font=('Impact', 28, 'bold'), fg="#FF0000", bg="#0C0C0E")
