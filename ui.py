@@ -71,7 +71,8 @@ def show_store(root, store_name, show_home):
         "farmaciamici": show_store_farmaciamici,
         "farciturespeciali": show_store_farciturespeciali,
         "droghe4ever": show_store_droghe4ever,
-        "coseperilcorpo": show_store_coseperilcorpo
+        "coseperilcorpo": show_store_coseperilcorpo,
+        "tuttoperimedici": show_store_tuttoperimedici
     }
 
     show_function = store_functions.get(store_name)
@@ -90,7 +91,8 @@ def check_url(root, url_entry):
         "www.farmaciamici.gre": "farmaciamici",
         "www.farciturespeciali.gre": "farciturespeciali",
         "www.droghe4ever.gre": "droghe4ever",
-        "www.coseperilcorpo.gre": "coseperilcorpo"
+        "www.coseperilcorpo.gre": "coseperilcorpo",
+        "www.tuttoperimedici.gre": "tuttoperimedici"
     }
 
     store_name = store_urls.get(user_url)
@@ -983,3 +985,146 @@ def show_store_coseperilcorpo(root, store_name, show_home):
                     command=partial(handle_purchase, store_name, product, product_quantity_label, buy_button, confirmation_label, "#FF4500")
                 )
             buy_button.pack(pady=5)  # Posiziona il pulsante
+
+def show_store_tuttoperimedici(root, store_name, show_home):
+    # Pulisce la finestra principale per mostrare lo store
+    for widget in root.winfo_children():
+        widget.destroy()
+
+    # Configura la finestra per lo store "Tutto Per I Medici"
+    root.configure(bg="#E8F8F5")  # Sfondo verde chiaro per richiamare l'ambiente ospedaliero
+
+    # Crea un canvas con uno scrollbar per contenere il main_frame
+    canvas = tk.Canvas(root, bg="#E8F8F5", highlightthickness=0)
+    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+    scrollbar = tk.Scrollbar(root, orient="vertical", command=canvas.yview)
+    scrollbar.pack(side=tk.RIGHT, fill="y")
+
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    # Crea un frame per il contenuto centrale dello store
+    main_frame = tk.Frame(canvas, bg="#E8F8F5")
+    canvas_window = canvas.create_window((0, 0), window=main_frame, anchor='n')
+
+    # Configura il canvas per adattarsi al contenuto del frame
+    main_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+    # Configura il canvas per adattarsi alla larghezza della finestra
+    canvas.bind("<Configure>", lambda e: canvas.itemconfig(canvas_window, width=e.width))
+
+    # Pulsante "Home" per tornare alla homepage
+    home_button = tk.Button(
+        main_frame, 
+        text="Home", 
+        font=('Roboto', 12, 'bold'), 
+        bg="#007ACC",  # Colore blu clinico
+        fg="white", 
+        cursor="hand2", 
+        command=show_home
+    )
+    home_button.pack(pady=10, anchor='nw')
+
+    # Carica il logo personalizzato
+    try:
+        logo_image = Image.open(resource_path("assets/tuttoperimedici_logo.png"))  # Logo medico
+        logo_image = logo_image.resize((300, 300), Image.Resampling.LANCZOS)
+        logo_photo = ImageTk.PhotoImage(logo_image)
+        logo_label = tk.Label(main_frame, image=logo_photo, bg="#E8F8F5")
+        logo_label.image = logo_photo
+        logo_label.pack(pady=20)
+    except Exception as e:
+        print(f"Errore nel caricamento del logo: {e}")
+
+    # Scritta di benvenuto
+    welcome_label = tk.Label(
+        main_frame, 
+        text=f"⚕ BENVENUTO SU {store_name.upper()} ⚕", 
+        font=('Roboto', 28, 'bold'), 
+        fg="#007ACC",  # Blu clinico
+        bg="#E8F8F5"
+    )
+    welcome_label.pack(pady=20)
+
+    # Carica i prodotti dallo store
+    store_data = load_store_data()
+    products = store_data.get(store_name, [])
+
+    # Mostra i prodotti come card
+    if products:
+        card_frame = tk.Frame(main_frame, bg="#E8F8F5")  # Frame per contenere tutte le card
+        card_frame.pack(pady=20)
+
+        for product in products:
+            # Frame della card per ciascun prodotto
+            product_frame = tk.Frame(card_frame, bg="#D6EAF8", bd=5, relief="ridge")  # Colore azzurro chiaro per la card
+            product_frame.pack(side=tk.LEFT, padx=20, pady=20)
+
+            # Nome del prodotto
+            product_name = tk.Label(
+                product_frame,
+                text=product["name"],
+                font=('Roboto', 14, 'bold'),
+                bg="#D6EAF8",
+                fg="#154360"  # Blu scuro
+            )
+            product_name.pack(pady=(10, 5))
+
+            # Quantità del prodotto
+            product_quantity_label = tk.Label(
+                product_frame,
+                font=('Roboto', 12),
+                bg="#D6EAF8",
+                fg="#154360"
+            )
+            if product["quantità"] == "Esaurito":
+                product_quantity_label.config(text="Esaurito", fg="#E74C3C")  # Rosso medico
+            else:
+                product_quantity_label.config(text=f"Quantità: {product['quantità']}")
+            product_quantity_label.pack()
+
+            # Costo del prodotto
+            product_price = tk.Label(
+                product_frame,
+                text=f"Costo: {product['costo']}",
+                font=('Roboto', 12),
+                bg="#D6EAF8",
+                fg="#154360"
+            )
+            product_price.pack(pady=(5, 10))
+
+            confirmation_label = tk.Label(
+                main_frame,
+                text="",
+                font=('Roboto', 16, 'bold'),
+                bg="#E8F8F5",  # Sfondo verde chiaro
+                fg="#007ACC",  # Testo blu clinico
+                pady=10
+            )
+            confirmation_label.pack(pady=20)
+
+            # Pulsante di acquisto
+            buy_button = tk.Button(
+                product_frame,
+                text="Acquista",
+                font=('Roboto', 12, 'bold'),
+                bg="#007ACC",  # Colore blu clinico
+                fg="#FFFFFF",   # Testo bianco
+                cursor="hand2"
+            )
+            if product["quantità"] == "Esaurito" or product["quantità"] == 0:
+                buy_button.config(state=tk.DISABLED)  # Disabilita il pulsante se il prodotto è esaurito
+            else:
+                buy_button.config(
+                    command=partial(handle_purchase, store_name, product, product_quantity_label, buy_button, confirmation_label, "#007ACC")
+                )
+            buy_button.pack(pady=5)  # Posiziona il pulsante
+    else:
+        no_products_label = tk.Label(
+            main_frame,
+            text="Nessun prodotto disponibile in questo store.",
+            font=('Roboto', 16),
+            bg="#E8F8F5",
+            fg="#E74C3C"  # Rosso per avviso
+        )
+        no_products_label.pack(pady=20)

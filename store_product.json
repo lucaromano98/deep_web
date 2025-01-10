@@ -100,5 +100,37 @@
             "quantit\u00e0": "Disponibile su Richiesta",
             "costo": "Prezzo di partenza: \n 50.000$"
         }
+    ],
+    "tuttoperimedici": [
+        {
+            "name": "Sacche di Sangue",
+            "quantit\u00e0": "5",
+            "costo": "10$"
+        },
+        {
+            "name": "Sangue di Benedetto",
+            "quantit\u00e0": "1",
+            "costo": "50 WillieCoin o 1500$"
+        },
+        {
+            "name": "Farmaco Antipandemico",
+            "quantit\u00e0": "2",
+            "costo": "19$"
+        },
+        {
+            "name": "Farmaco Antitossina",
+            "quantit\u00e0": "5",
+            "costo": "19$"
+        },
+        {
+            "name": "Farmaco Fisico",
+            "quantit\u00e0": "5",
+            "costo": "21$"
+        },
+        {
+            "name": "Farmaco Mentale",
+            "quantit\u00e0": "5",
+            "costo": "21$"
+        }
     ]
 }
